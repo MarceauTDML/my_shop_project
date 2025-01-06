@@ -396,15 +396,18 @@ app.delete('/cart/:id', (req, res) => {
 app.get('/cart/:userId', (req, res) => {
   const { userId } = req.params;
   const sql = `
-    SELECT c.id, c.quantity, p.name, p.price, p.image
+    SELECT c.id, c.quantity, p.id AS product_id, p.name, p.price, p.image
     FROM cart c
     JOIN products p ON c.product_id = p.id
-    WHERE c.user_id = ? AND p.id IS NOT NULL
+    WHERE c.user_id = ?
   `;
   db.query(sql, [userId], (err, results) => {
     if (err) {
-      console.error('Error fetching cart:', err.message);
-      return res.status(500).send('Error fetching cart.');
+      console.error('Erreur lors de la récupération du panier :', err.message);
+      return res.status(500).send('Erreur serveur.');
+    }
+    if (results.length === 0) {
+      return res.status(404).send('Le panier est vide.');
     }
     res.status(200).json(results);
   });
@@ -413,40 +416,66 @@ app.get('/cart/:userId', (req, res) => {
 app.post('/checkout', (req, res) => {
   const { userId, cartItems } = req.body;
   if (!userId || !cartItems || cartItems.length === 0) {
-    return res.status(400).send('Invalid request: Missing userId or cart items.');
+    return res.status(400).send('Requête invalide : ID utilisateur ou panier manquant.');
   }
-  const productIds = cartItems.map((item) => item.id);
+
+  const productIds = cartItems.map(item => item.product_id);
   const validateProductsSql = 'SELECT id FROM products WHERE id IN (?)';
+
   db.query(validateProductsSql, [productIds], (validateErr, results) => {
     if (validateErr) {
-      console.error('Error validating products:', validateErr.message);
-      return res.status(500).send('Error processing checkout.');
+      console.error('Erreur lors de la validation des produits :', validateErr.message);
+      return res.status(500).send('Erreur lors de la validation des produits.');
     }
-    const validProductIds = results.map((row) => row.id);
-    const invalidProducts = productIds.filter((id) => !validProductIds.includes(id));
+
+    const validProductIds = results.map(row => row.id);
+    const invalidProducts = productIds.filter(id => !validProductIds.includes(id));
+
     if (invalidProducts.length > 0) {
-      console.error('Invalid product IDs in cart:', invalidProducts);
-      return res.status(400).send(`Invalid products in cart: ${invalidProducts.join(', ')}`);
+      console.error('Produits invalides :', invalidProducts);
+      return res.status(400).send(`Produits invalides : ${invalidProducts.join(', ')}`);
     }
-    const purchaseData = cartItems.map((item) => [userId, item.id, item.quantity]);
-    const purchaseHistorySql = `
-      INSERT INTO purchase_history (user_id, product_id, quantity)
-      VALUES ?
-    `;
-    db.query(purchaseHistorySql, [purchaseData], (err) => {
+
+    // Insertion dans purchase_history
+    const purchaseData = cartItems.map(item => [userId, item.product_id, item.quantity]);
+    const sql = `INSERT INTO purchase_history (user_id, product_id, quantity) VALUES ?`;
+
+    db.query(sql, [purchaseData], (err) => {
       if (err) {
-        console.error('Error adding to purchase history:', err.message);
-        return res.status(500).send('Error processing checkout.');
+        console.error('Erreur lors de l\'insertion dans l\'historique :', err.message);
+        return res.status(500).send('Erreur lors du traitement du paiement.');
       }
+
+      // Suppression des articles du panier
       const clearCartSql = 'DELETE FROM cart WHERE user_id = ?';
       db.query(clearCartSql, [userId], (clearErr) => {
         if (clearErr) {
-          console.error('Error clearing cart:', clearErr.message);
-          return res.status(500).send('Error clearing cart.');
+          console.error('Erreur lors de la suppression du panier :', clearErr.message);
+          return res.status(500).send('Erreur lors du nettoyage du panier.');
         }
-        res.status(200).send('Checkout completed successfully.');
+        res.status(200).send('Paiement réussi.');
       });
     });
+  });
+});
+
+app.get('/cart/:userId/:productId', (req, res) => {
+  const { userId, productId } = req.params;
+  const sql = `
+    SELECT c.id, c.quantity, p.name, p.price, p.image
+    FROM cart c
+    JOIN products p ON c.product_id = p.id
+    WHERE c.user_id = ? AND c.product_id = ?
+  `;
+  db.query(sql, [userId, productId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération du produit dans le panier :', err.message);
+      return res.status(500).send('Erreur serveur.');
+    }
+    if (results.length === 0) {
+      return res.status(404).send('Produit introuvable dans le panier.');
+    }
+    res.status(200).json(results[0]);
   });
 });
 
@@ -455,13 +484,37 @@ app.delete('/cart/:userId/:productId', (req, res) => {
   const sql = 'DELETE FROM cart WHERE user_id = ? AND product_id = ?';
   db.query(sql, [userId, productId], (err, results) => {
     if (err) {
-      console.error('Error removing product from cart:', err.message);
-      return res.status(500).send('Error removing product from cart.');
+      console.error('Erreur lors de la suppression du produit :', err.message);
+      return res.status(500).send('Erreur serveur.');
     }
     if (results.affectedRows === 0) {
-      return res.status(404).send('Product not found in cart.');
+      return res.status(404).send('Produit non trouvé dans le panier.');
     }
-    res.status(200).send('Product removed from cart.');
+    res.status(200).send('Produit retiré du panier.');
+  });
+});
+
+app.get('/cart/increase/:userId/:productId', (req, res) => {
+  const { userId, productId } = req.params;
+  const sql = `
+    SELECT p.stock, c.quantity
+    FROM products p
+    LEFT JOIN cart c ON p.id = c.product_id AND c.user_id = ?
+    WHERE p.id = ?
+  `;
+  db.query(sql, [userId, productId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la vérification de l\'augmentation :', err.message);
+      return res.status(500).send('Erreur serveur.');
+    }
+    if (results.length === 0) {
+      return res.status(404).send('Produit introuvable.');
+    }
+    const { stock, quantity } = results[0];
+    if (quantity < stock) {
+      return res.status(200).send('Quantité disponible pour augmentation.');
+    }
+    return res.status(400).send('Stock insuffisant pour augmenter la quantité.');
   });
 });
 
@@ -470,28 +523,55 @@ app.put('/cart/increase/:userId/:productId', (req, res) => {
   const sql = 'UPDATE cart SET quantity = quantity + 1 WHERE user_id = ? AND product_id = ?';
   db.query(sql, [userId, productId], (err, results) => {
     if (err) {
-      console.error('Error increasing quantity:', err.message);
-      return res.status(500).send('Error increasing quantity.');
+      console.error('Erreur lors de l\'augmentation de la quantité :', err.message);
+      return res.status(500).send('Erreur serveur.');
     }
     if (results.affectedRows === 0) {
-      return res.status(404).send('Product not found in cart.');
+      return res.status(404).send('Produit non trouvé dans le panier.');
     }
-    res.status(200).send('Quantity increased.');
+    res.status(200).send('Quantité augmentée.');
+  });
+});
+
+app.get('/cart/decrease/:userId/:productId', (req, res) => {
+  const { userId, productId } = req.params;
+  const sql = `
+    SELECT c.quantity
+    FROM cart c
+    WHERE c.user_id = ? AND c.product_id = ?
+  `;
+  db.query(sql, [userId, productId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la vérification de la diminution :', err.message);
+      return res.status(500).send('Erreur serveur.');
+    }
+    if (results.length === 0) {
+      return res.status(404).send('Produit introuvable dans le panier.');
+    }
+    const { quantity } = results[0];
+    if (quantity > 1) {
+      return res.status(200).send('Quantité disponible pour diminution.');
+    }
+    return res.status(400).send('Impossible de diminuer la quantité en dessous de 1.');
   });
 });
 
 app.put('/cart/decrease/:userId/:productId', (req, res) => {
   const { userId, productId } = req.params;
-  const sql = 'UPDATE cart SET quantity = quantity - 1 WHERE user_id = ? AND product_id = ? AND quantity > 1';
+  const sql = `
+    UPDATE cart 
+    SET quantity = quantity - 1 
+    WHERE user_id = ? AND product_id = ? AND quantity > 1
+  `;
   db.query(sql, [userId, productId], (err, results) => {
     if (err) {
-      console.error('Error decreasing quantity:', err.message);
-      return res.status(500).send('Error decreasing quantity.');
+      console.error('Erreur lors de la diminution de la quantité :', err.message);
+      return res.status(500).send('Erreur serveur.');
     }
     if (results.affectedRows === 0) {
-       return res.status(404).send('Product not found in cart or quantity already at minimum.');
+      return res.status(404).send('Produit non trouvé dans le panier ou quantité déjà minimale.');
     }
-    res.status(200).send('Quantity decreased.');
+    res.status(200).send('Quantité diminuée.');
   });
 });
 

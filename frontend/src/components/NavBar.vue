@@ -15,7 +15,7 @@
           <router-link to="/history" class="navbar-link">History</router-link>
         </li>
         <li v-if="user && user.role === 'admin'" class="navbar-item">
-          <router-link to="/dashboard" class="navbar-link">Dashboard</router-link>
+          <router-link to="/dashboard/users" class="navbar-link">Dashboard</router-link>
         </li>
       </ul>
  

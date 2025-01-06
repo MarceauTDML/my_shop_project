@@ -7,14 +7,13 @@
 
     <div v-else class="cart-content">
       <div class="cart-items">
-        <hr />
         <div class="cart-item" v-for="item in cart" :key="item.id">
           <div class="item-image">
-            <img :src="item.image" />
+            <img :src="item.image" alt="Product image" />
           </div>
           <div class="item-details">
             <h2>{{ item.name }}</h2>
-            <p class="item-price">{{ item.price }} €</p>
+            <p class="item-price">{{ Number(item.price).toFixed(2) }} €</p>
             <div class="quantity-controls">
               <label>Quantity:</label>
               <button @click="decreaseQuantity(item)" class="quantity-btn">-</button>
@@ -24,13 +23,12 @@
             <button @click="removeFromCart(item)" class="remove-btn">Remove</button>
           </div>
         </div>
-        <hr />
       </div>
 
       <div class="cart-summary">
-        <h2>Total</h2>
-        <p>Subtotal: <span class="total-price">{{ totalPrice }} €</span></p>
-        <button @click="checkout" class="checkout-btn">Proceed to Payment</button>
+        <h2>Order Summary</h2>
+        <p>Total: <span class="total-price">{{ totalPrice }} €</span></p>
+        <button @click="checkout" class="checkout-btn">Checkout</button>
       </div>
     </div>
   </div>
@@ -42,7 +40,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      cart: [],
+      cart: [], // Cart items
     };
   },
   computed: {
@@ -67,7 +65,7 @@ export default {
       try {
         const userId = this.$store.state.user.id;
         await axios.delete(`http://localhost:1000/cart/${userId}/${item.id}`);
-        this.cart = this.cart.filter((cartItem) => cartItem.id !== item.id);
+        this.cart = this.cart.filter(cartItem => cartItem.id !== item.id);
         alert("Product removed from cart.");
       } catch (error) {
         console.error("Error removing product from cart:", error.message);
@@ -75,67 +73,53 @@ export default {
       }
     },
     async increaseQuantity(item) {
-      try {
-        const userId = this.$store.state.user.id;
-        await axios.put(`http://localhost:1000/cart/increase/${userId}/${item.id}`);
-        item.quantity++;
-      } catch (error) {
-        console.error("Error increasing quantity:", error.message);
-        alert("Failed to increase quantity.");
-      }
-    },
-    async decreaseQuantity(item) {
-      if (item.quantity > 1) {
-        try {
-          const userId = this.$store.state.user.id;
-          await axios.put(`http://localhost:1000/cart/decrease/${userId}/${item.id}`);
-          item.quantity--;
-        } catch (error) {
-          console.error("Error decreasing quantity:", error.message);
-          alert("Failed to decrease quantity.");
-        }
-      } else {
-        this.removeFromCart(item);
-      }
-    },
-    async checkout() {
-    try {
-      const userId = this.$store.state.user?.id; // Vérifiez si l'utilisateur est connecté
-      if (!userId) {
-        alert('Vous devez être connecté pour payer.');
-        return;
-      }
-
-      if (!this.cart || this.cart.length === 0) {
-        alert('Votre panier est vide.');
-        return;
-      }
-
-      // Préparer les données pour l'API
-      const cartItems = this.cart.map((item) => ({
-        product_id: item.id,
-        quantity: item.quantity,
-      }));
-
-      // Appeler l'API pour traiter le paiement
-      const response = await axios.post('http://localhost:1000/checkout', {
-        userId,
-        cartItems,
-      });
-
-      if (response.status === 200) {
-        alert('Paiement réussi !');
-        this.cart = []; // Vider le panier après le paiement
-      } else {
-        alert('Échec du paiement. Veuillez réessayer.');
-      }
-    } catch (error) {
-      console.error('Erreur lors du paiement:', error.message);
-      alert(
-        error.response?.data || 'Une erreur est survenue lors du traitement du paiement.'
-      );
+  try {
+    const userId = this.$store.state.user.id;
+    await axios.get(`http://localhost:1000/cart/increase/${userId}/${item.id}`);
+    await axios.put(`http://localhost:1000/cart/increase/${userId}/${item.id}`);
+    item.quantity++;
+  } catch (error) {
+    console.error("Error increasing quantity:", error.message);
+    alert(error.response?.data || "Failed to increase quantity.");
+  }
+},
+async decreaseQuantity(item) {
+  try {
+    const userId = this.$store.state.user.id;
+    await axios.get(`http://localhost:1000/cart/decrease/${userId}/${item.id}`);
+    if (item.quantity > 1) {
+      await axios.put(`http://localhost:1000/cart/decrease/${userId}/${item.id}`);
+      item.quantity--;
     }
-  },
+  } catch (error) {
+    console.error("Error decreasing quantity:", error.message);
+    alert(error.response?.data || "Failed to decrease quantity.");
+  }
+},
+    async checkout() {
+  try {
+    const userId = this.$store.state.user.id;
+    if (!this.cart || this.cart.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+    const cartItems = this.cart.map(item => ({
+      product_id: item.id,
+      quantity: item.quantity,
+    }));
+    const response = await axios.post("http://localhost:1000/checkout", {
+      userId,
+      cartItems,
+    });
+    if (response.status === 200) {
+      alert("Checkout successful!");
+      this.cart = [];
+    }
+  } catch (error) {
+    console.error("Error during checkout:", error.message);
+    alert("Checkout failed. Please try again.");
+  }
+},
   },
   mounted() {
     this.fetchCart();

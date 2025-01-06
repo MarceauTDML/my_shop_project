@@ -6,6 +6,8 @@ import Dashboard from '@/views/Dashboard.vue';
 import Cart from '@/views/Cart.vue';
 import Profile from '@/views/Profile.vue';
 import History from '@/views/History.vue';
+import DashboardCategories from "@/views/DashboardCategories.vue";
+import DashboardProducts from "@/views/DashboardProducts.vue";
 
 const routes = [
   {
@@ -21,7 +23,7 @@ const routes = [
     component: Login
   },
   {
-    path: '/dashboard',
+    path: '/dashboard/users',
     component: Dashboard,
     beforeEnter: (to, from, next) => {
       const user = JSON.parse(localStorage.getItem('user'));
@@ -30,6 +32,32 @@ const routes = [
       } else {
         alert('Accès refusé : vous n\'êtes pas autorisé à consulter cette page.');
         next('/');
+      }
+    },
+  },
+  {
+    path: "/dashboard/categories",
+    component: DashboardCategories,
+    beforeEnter: (to, from, next) => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.role === "admin") {
+        next();
+      } else {
+        alert("Access Denied: Admins Only");
+        next("/");
+      }
+    },
+  },
+  {
+    path: "/dashboard/products",
+    component: DashboardProducts,
+    beforeEnter: (to, from, next) => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.role === "admin") {
+        next();
+      } else {
+        alert("Access Denied: Admins Only");
+        next("/");
       }
     },
   },
