@@ -1,17 +1,17 @@
 <template>
-  <div class="history">
+  <div class="history" aria-label="Purchase History">
     <h1>Your Purchase History</h1>
-    <div v-if="history.length === 0" class="empty-history">
+    <div v-if="history.length === 0" class="empty-history" aria-label="Empty Purchase History">
       <p>No purchases yet.</p>
     </div>
-    <div v-else>
-      <div v-for="item in history" :key="item.purchase_date" class="history-item">
-        <div class="history-details">
-          <p class="item-name">{{ item.name }}</p>
-          <p class="item-quantity">{{ item.quantity }} pcs</p>
-          <p class="item-price">{{ item.price }} € each</p>
+    <div v-else aria-label="Purchase History List">
+      <div v-for="item in history" :key="item.purchase_date" class="history-item" aria-label="Purchase Item">
+        <div class="history-details" aria-label="Item Details">
+          <p class="item-name" aria-label="Item Name">{{ item.name }}</p>
+          <p class="item-quantity" aria-label="Quantity">{{ item.quantity }} pcs</p>
+          <p class="item-price" aria-label="Price">{{ item.price }} € each</p>
         </div>
-        <p class="purchase-date">Date: {{ new Date(item.purchase_date).toLocaleString() }}</p>
+        <p class="purchase-date" aria-label="Purchase Date">Date: {{ new Date(item.purchase_date).toLocaleString() }}</p>
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@ export default {
       } catch (error) {
         if (error.response && error.response.status === 404) {
           console.error('No purchase history found:', error.message);
-          this.history = []; // Set to empty if no purchases exist
+          this.history = [];
         } else {
           console.error('Error fetching history:', error.message);
           alert('Failed to load purchase history.');
