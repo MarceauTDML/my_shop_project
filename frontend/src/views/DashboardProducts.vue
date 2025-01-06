@@ -1,44 +1,46 @@
 <template>
-  <div class="dashboard">
+  <div class="dashboard" aria-label="Product Management Dashboard">
     <AdminMenu />
     <section>
       <h1>Manage Products</h1>
-      <button @click="showProductForm = !showProductForm">
-        {{ showProductForm ? 'Annuler' : 'Ajouter un produit' }}
+      <button @click="showProductForm = !showProductForm" aria-label="Toggle Product Form">
+        {{ showProductForm ? 'Cancel' : 'Add Product' }}
       </button>
-      <form v-if="showProductForm" @submit.prevent="createOrUpdateProduct">
-        <input v-model="newProduct.name" placeholder="Nom" required />
-        <input v-model="newProduct.description" placeholder="Description" />
-        <input v-model="newProduct.price" type="number" placeholder="Prix" required />
-        <input v-model="newProduct.image" placeholder="URL de l'image" required />
-        <select v-model="newProduct.category_id" required>
+      <form v-if="showProductForm" @submit.prevent="createOrUpdateProduct" aria-label="Product Form">
+        <input v-model="newProduct.name" placeholder="Name" required aria-label="Product Name" />
+        <input v-model="newProduct.description" placeholder="Description" aria-label="Product Description" />
+        <input v-model="newProduct.price" type="number" placeholder="Price" required aria-label="Product Price" />
+        <input v-model="newProduct.image" placeholder="Image URL" required aria-label="Product Image URL" />
+        <select v-model="newProduct.category_id" required aria-label="Select Category">
           <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.name }}
           </option>
         </select>
-        <button type="submit">{{ newProduct.id ? 'Modifier' : 'Ajouter' }}</button>
+        <button type="submit" aria-label="{{ newProduct.id ? 'Update Product' : 'Add Product' }}">
+          {{ newProduct.id ? 'Update' : 'Add' }}
+        </button>
       </form>
-      <table>
+      <table aria-label="Product List">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Nom</th>
+            <th>Name</th>
             <th>Description</th>
-            <th>Prix</th>
-            <th>Catégorie</th>
+            <th>Price</th>
+            <th>Category</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="product in products" :key="product.id">
+          <tr v-for="product in products" :key="product.id" aria-label="Product {{ product.name }}">
             <td>{{ product.id }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.description }}</td>
             <td>{{ product.price }}</td>
             <td>{{ categories.find(cat => cat.id === product.category_id)?.name }}</td>
             <td>
-              <button @click="editProduct(product)" class="edit-button">Modifier</button>
-              <button @click="deleteProduct(product.id)" class="delete-button">Supprimer</button>
+              <button @click="editProduct(product)" class="edit-button" aria-label="Edit {{ product.name }}">Edit</button>
+              <button @click="deleteProduct(product.id)" class="delete-button" aria-label="Delete {{ product.name }}">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -74,77 +76,75 @@ export default {
         const { data } = await axios.get('http://localhost:1000/products');
         this.products = data.data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des produits :', error);
-        alert('Impossible de récupérer les produits.');
+        console.error('Error fetching products:', error);
+        alert('Unable to fetch products.');
       }
     },
     async createOrUpdateProduct() {
       try {
         if (this.newProduct.id) {
           await axios.put(`http://localhost:1000/products/${this.newProduct.id}`, this.newProduct);
-          alert('Produit modifié avec succès.');
+          alert('Product updated successfully.');
         } else {
           await axios.post('http://localhost:1000/products', this.newProduct);
-          alert('Produit ajouté avec succès.');
+          alert('Product added successfully.');
         }
         this.fetchProducts();
         this.showProductForm = false;
         this.newProduct = { id: null, name: '', description: '', price: '', image: '', category_id: '' };
       } catch (error) {
-        console.error('Erreur lors de la création ou modification du produit :', error);
-        alert('Impossible de créer ou modifier le produit.');
+        console.error('Error creating or updating product:', error);
+        alert('Failed to create or update product.');
       }
     },
     async deleteProduct(productId) {
       try {
         await axios.delete(`http://localhost:1000/products/${productId}`);
         this.fetchProducts();
-        alert('Produit supprimé avec succès.');
+        alert('Product deleted successfully.');
       } catch (error) {
-        console.error('Erreur lors de la suppression du produit :', error);
-        alert('Impossible de supprimer le produit.');
+        console.error('Error deleting product:', error);
+        alert('Failed to delete product.');
       }
     },
     editProduct(product) {
       this.newProduct = { ...product };
       this.showProductForm = true;
     },
-
-    // Gestion des catégories
     async fetchCategories() {
       try {
         const { data } = await axios.get('http://localhost:1000/categories');
         this.categories = data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des catégories :', error);
-        alert('Impossible de récupérer les catégories.');
+        console.error('Error fetching categories:', error);
+        alert('Unable to fetch categories.');
       }
     },
     async createOrUpdateCategory() {
       try {
         if (this.newCategory.id) {
           await axios.put(`http://localhost:1000/categories/${this.newCategory.id}`, this.newCategory);
-          alert('Catégorie modifiée avec succès.');
+          alert('Category updated successfully.');
         } else {
           await axios.post('http://localhost:1000/categories', this.newCategory);
-          alert('Catégorie ajoutée avec succès.');
+          alert('Category added successfully.');
         }
         this.fetchCategories();
         this.showCategoryForm = false;
         this.newCategory = { id: null, name: '' };
       } catch (error) {
-        console.error('Erreur lors de la création ou modification de la catégorie :', error);
-        alert('Impossible de créer ou modifier la catégorie.');
+        console.error('Error creating or updating category:', error);
+        alert('Failed to create or update category.');
       }
     },
     async deleteCategory(categoryId) {
       try {
         await axios.delete(`http://localhost:1000/categories/${categoryId}`);
         this.fetchCategories();
-        alert('Catégorie supprimée avec succès.');
+        alert('Category deleted successfully.');
       } catch (error) {
-        console.error('Erreur lors de la suppression de la catégorie :', error);
-        alert('Impossible de supprimer la catégorie.');
+        console.error('Error deleting category:', error);
+        alert('Failed to delete category.');
       }
     },
     editCategory(category) {
