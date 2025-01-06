@@ -1,16 +1,16 @@
 <template>
-  <div class="login">
+  <div class="login" aria-label="Login Page">
     <h1>Login</h1>
-    <form @submit.prevent="loginUser">
+    <form @submit.prevent="loginUser" aria-label="Login Form">
       <div class="form-group">
         <label for="email">Email</label>
-        <input id="email" v-model="form.email" type="email" required />
+        <input id="email" v-model="form.email" type="email" required aria-label="Email Input" />
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" v-model="form.password" type="password" required />
+        <input id="password" v-model="form.password" type="password" required aria-label="Password Input" />
       </div>
-      <button class="primary-button" type="submit">Login</button>
+      <button class="primary-button" type="submit" aria-label="Submit Login Form">Login</button>
     </form>
   </div>
 </template>
@@ -40,7 +40,7 @@ export default {
           this.$router.push('/');
         }
       } catch (error) {
-        console.error('Error during login:', error);
+        console.error('Error during login:', error.message);
         alert('Invalid credentials. Please try again.');
       }
     },
@@ -61,7 +61,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: left;
-  text-align: center; /* Centrer le texte dans tous les éléments */
+  text-align: center;
 }
 
 .login h1 {
@@ -73,7 +73,7 @@ export default {
 
 .form-group {
   margin-bottom: 1.5rem;
-  width: 100%; /* S'assurer que les éléments de formulaire prennent toute la largeur du parent */
+  width: 100%;
 }
 
 label {
@@ -81,11 +81,11 @@ label {
   margin-bottom: 0.5rem;
   font-weight: 600;
   color: #826A5C;
-  text-align: left; /* Alignement du texte des labels à gauche */
+  text-align: left;
 }
 
 input {
-  width: 98%; /* S'assurer que les champs prennent 100% de la largeur disponible */
+  width: 98%;
   padding: 0.7rem;
   border: 1px solid #CCC2BC;
   border-radius: 8px;
@@ -114,7 +114,7 @@ input:focus {
   cursor: pointer;
   text-align: center;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-top: 1.5rem; /* Ajouter un espace entre le formulaire et le bouton */
+  margin-top: 1.5rem;
 }
 
 .primary-button:hover {
