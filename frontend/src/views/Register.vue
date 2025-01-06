@@ -16,37 +16,60 @@
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" v-model="form.password" type="password" required />
+        <input
+          id="password"
+          v-model="form.password"
+          type="password"
+          required
+        />
+        <p v-if="passwordError" class="error">{{ passwordError }}</p>
       </div>
       <button class="primary-button" type="submit">Register</button>
     </form>
   </div>
 </template>
-  
+
 <script>
-import axios from 'axios';
+import axios from "axios";
 export default {
-  name: 'Register',
+  name: "Register",
   data() {
     return {
       form: {
-        lastName: '',
-        name: '',
-        email: '',
-        password: '',
+        lastName: "",
+        name: "",
+        email: "",
+        password: "",
       },
+      passwordError: null,
     };
   },
   methods: {
-    async registerUser() {
-      try {
-        const response = await axios.post('http://localhost:1000/register', this.form);
-        alert('Registration successful!');
-        this.$router.push('/login');
+    validatePassword(password) {
+      const passwordRegex =
+        /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{11,}$/;
+      if (!passwordRegex.test(password)) {
+        return (
+          "Password must be at least 11 characters long, include at least one number and one special character."
+        );
       }
-      catch (error) {
-        console.error('Error registering user:', error);
-        alert('An error occurred during registration. Please try again.');
+      return null;
+    },
+    async registerUser() {
+      this.passwordError = this.validatePassword(this.form.password);
+      if (this.passwordError) {
+        return;
+      }
+      try {
+        const response = await axios.post(
+          "http://localhost:1000/register",
+          this.form
+        );
+        alert("Registration successful!");
+        this.$router.push("/login");
+      } catch (error) {
+        console.error("Error registering user:", error);
+        alert("An error occurred during registration. Please try again.");
       }
     },
   },
@@ -78,7 +101,7 @@ export default {
 
 .form-group {
   margin-bottom: 1.5rem;
-  width: 100%; /* S'assurer que les éléments prennent toute la largeur du parent */
+  width: 100%;
 }
 
 label {
@@ -86,11 +109,11 @@ label {
   margin-bottom: 0.5rem;
   font-weight: 600;
   color: #826A5C;
-  text-align: left; /* Alignement du texte des labels à gauche */
+  text-align: left;
 }
 
 input {
-  width: 90%; /* S'assurer que les champs prennent 100% de la largeur disponible */
+  width: 90%;
   padding: 0.7rem;
   border: 1px solid #CCC2BC;
   border-radius: 8px;
@@ -118,7 +141,7 @@ input:focus {
   cursor: pointer;
   text-align: center;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-top: 1.5rem; /* Ajouter un espace entre le formulaire et le bouton */
+  margin-top: 1.5rem;
 }
 
 .primary-button:hover {

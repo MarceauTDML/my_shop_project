@@ -40,6 +40,11 @@ const executeQuery = (sql, params, res) => {
   });
 };
 
+const validatePassword = (password) => {
+  const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{11,}$/;
+  return passwordRegex.test(password);
+};
+
 app.get('/users', (req, res) => {
   executeQuery('SELECT * FROM users', [], res);
 });
@@ -266,34 +271,41 @@ app.delete('/products/:id', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-    const { lastName, name, email, password } = req.body;
-    if (!lastName || !name || !email || !password) {
-        return res.status(400).send('Tous les champs sont requis.');
-    }
-    try {
-        const checkEmailSql = `SELECT * FROM users WHERE email = ?`;
-        db.query(checkEmailSql, [email], async (checkErr, results) => {
-            if (checkErr) {
-                console.error('Erreur lors de la vérification de l\'email :', checkErr.message);
-                return res.status(500).send('Erreur serveur.');
-            }
-            if (results.length > 0) {
-                return res.status(409).send('Cet email est déjà utilisé.');
-            }
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const sql = `INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'user')`;
-            db.query(sql, [`${name} ${lastName}`, email, hashedPassword], (err, results) => {
-                if (err) {
-                    console.error('Erreur lors de l\'enregistrement de l\'utilisateur :', err.message);
-                    return res.status(500).send('Erreur lors de l\'enregistrement de l\'utilisateur.');
-                }
-                res.status(201).send('Utilisateur enregistré avec succès.');
-            });
-        });
-    } catch (error) {
-        console.error('Erreur lors du hachage du mot de passe:', error.message);
-        res.status(500).send('Erreur interne du serveur.');
-    }
+  const { lastName, name, email, password } = req.body;
+  if (!lastName || !name || !email || !password) {
+    return res.status(400).send('Tous les champs sont requis.');
+  }
+  if (!validatePassword(password)) {
+    return res
+      .status(400)
+      .send(
+        'Le mot de passe doit contenir au moins 11 caractères, un numéro et un caractère spécial.'
+      );
+  }
+  try {
+    const checkEmailSql = `SELECT * FROM users WHERE email = ?`;
+    db.query(checkEmailSql, [email], async (checkErr, results) => {
+      if (checkErr) {
+        console.error('Erreur lors de la vérification de l\'email :', checkErr.message);
+        return res.status(500).send('Erreur serveur.');
+      }
+      if (results.length > 0) {
+        return res.status(409).send('Cet email est déjà utilisé.');
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const sql = `INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'user')`;
+      db.query(sql, [`${name} ${lastName}`, email, hashedPassword], (err, results) => {
+        if (err) {
+          console.error('Erreur lors de l\'enregistrement de l\'utilisateur :', err.message);
+          return res.status(500).send('Erreur lors de l\'enregistrement de l\'utilisateur.');
+        }
+        res.status(201).send('Utilisateur enregistré avec succès.');
+      });
+    });
+  } catch (error) {
+    console.error('Erreur lors du hachage du mot de passe:', error.message);
+    res.status(500).send('Erreur interne du serveur.');
+  }
 });
 
 app.post('/login', (req, res) => {
@@ -481,7 +493,7 @@ app.put('/cart/decrease/:userId/:productId', (req, res) => {
     }
     res.status(200).send('Quantity decreased.');
   });
-});  
+});
 
 app.get('/purchase-history/:userId', (req, res) => {
   const { userId } = req.params;
