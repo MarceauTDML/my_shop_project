@@ -1,34 +1,52 @@
 <template>
-  <div class="cart">
+  <div class="cart" aria-label="Shopping Cart">
     <h1>Your Cart</h1>
-    <div v-if="cart.length === 0" class="empty-cart">
+    <div v-if="cart.length === 0" class="empty-cart" aria-label="Empty Cart">
       <p>Your cart is empty.</p>
     </div>
-
     <div v-else class="cart-content">
       <div class="cart-items">
-        <div class="cart-item" v-for="item in cart" :key="item.id">
-          <div class="item-image">
-            <img :src="item.image" alt="Product image" />
+        <div 
+          class="cart-item" 
+          v-for="item in cart" 
+          :key="item.id" 
+          aria-label="Cart Item {{ item.name }}">
+          <div class="item-image" aria-label="Product Image">
+            <img :src="item.image" :alt="`Image of ${item.name}`" />
           </div>
           <div class="item-details">
             <h2>{{ item.name }}</h2>
-            <p class="item-price">{{ Number(item.price).toFixed(2) }} €</p>
-            <div class="quantity-controls">
-              <label>Quantity:</label>
-              <button @click="decreaseQuantity(item)" class="quantity-btn">-</button>
-              <span>{{ item.quantity }}</span>
-              <button @click="increaseQuantity(item)" class="quantity-btn">+</button>
+            <p class="item-price" aria-label="Price">{{ Number(item.price).toFixed(2) }} €</p>
+            <div class="quantity-controls" aria-label="Quantity Controls">
+              <label for="quantity-{{item.id}}">Quantity:</label>
+              <button 
+                @click="decreaseQuantity(item)" 
+                class="quantity-btn" 
+                aria-label="Decrease quantity for {{ item.name }}">-
+              </button>
+              <span id="quantity-{{item.id}}">{{ item.quantity }}</span>
+              <button 
+                @click="increaseQuantity(item)" 
+                class="quantity-btn" 
+                aria-label="Increase quantity for {{ item.name }}">+
+              </button>
             </div>
-            <button @click="removeFromCart(item)" class="remove-btn">Remove</button>
+            <button 
+              @click="removeFromCart(item)" 
+              class="remove-btn" 
+              aria-label="Remove {{ item.name }} from cart">Remove
+            </button>
           </div>
         </div>
       </div>
-
-      <div class="cart-summary">
+      <div class="cart-summary" aria-label="Order Summary">
         <h2>Order Summary</h2>
-        <p>Total: <span class="total-price">{{ totalPrice }} €</span></p>
-        <button @click="checkout" class="checkout-btn">Checkout</button>
+        <p>Total: <span class="total-price" aria-label="Total Price">{{ totalPrice }} €</span></p>
+        <button 
+          @click="checkout" 
+          class="checkout-btn" 
+          aria-label="Proceed to Checkout">Checkout
+        </button>
       </div>
     </div>
   </div>
@@ -40,7 +58,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      cart: [], // Cart items
+      cart: [],
     };
   },
   computed: {
@@ -73,53 +91,51 @@ export default {
       }
     },
     async increaseQuantity(item) {
-  try {
-    const userId = this.$store.state.user.id;
-    await axios.get(`http://localhost:1000/cart/increase/${userId}/${item.id}`);
-    await axios.put(`http://localhost:1000/cart/increase/${userId}/${item.id}`);
-    item.quantity++;
-  } catch (error) {
-    console.error("Error increasing quantity:", error.message);
-    alert(error.response?.data || "Failed to increase quantity.");
-  }
-},
-async decreaseQuantity(item) {
-  try {
-    const userId = this.$store.state.user.id;
-    await axios.get(`http://localhost:1000/cart/decrease/${userId}/${item.id}`);
-    if (item.quantity > 1) {
-      await axios.put(`http://localhost:1000/cart/decrease/${userId}/${item.id}`);
-      item.quantity--;
-    }
-  } catch (error) {
-    console.error("Error decreasing quantity:", error.message);
-    alert(error.response?.data || "Failed to decrease quantity.");
-  }
-},
+      try {
+        const userId = this.$store.state.user.id;
+        await axios.put(`http://localhost:1000/cart/increase/${userId}/${item.id}`);
+        item.quantity++;
+      } catch (error) {
+        console.error("Error increasing quantity:", error.message);
+        alert(error.response?.data || "Failed to increase quantity.");
+      }
+    },
+    async decreaseQuantity(item) {
+      try {
+        const userId = this.$store.state.user.id;
+        if (item.quantity > 1) {
+          await axios.put(`http://localhost:1000/cart/decrease/${userId}/${item.id}`);
+          item.quantity--;
+        }
+      } catch (error) {
+        console.error("Error decreasing quantity:", error.message);
+        alert(error.response?.data || "Failed to decrease quantity.");
+      }
+    },
     async checkout() {
-  try {
-    const userId = this.$store.state.user.id;
-    if (!this.cart || this.cart.length === 0) {
-      alert("Your cart is empty.");
-      return;
-    }
-    const cartItems = this.cart.map(item => ({
-      product_id: item.id,
-      quantity: item.quantity,
-    }));
-    const response = await axios.post("http://localhost:1000/checkout", {
-      userId,
-      cartItems,
-    });
-    if (response.status === 200) {
-      alert("Checkout successful!");
-      this.cart = [];
-    }
-  } catch (error) {
-    console.error("Error during checkout:", error.message);
-    alert("Checkout failed. Please try again.");
-  }
-},
+      try {
+        const userId = this.$store.state.user.id;
+        if (!this.cart || this.cart.length === 0) {
+          alert("Your cart is empty.");
+          return;
+        }
+        const cartItems = this.cart.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity,
+        }));
+        const response = await axios.post("http://localhost:1000/checkout", {
+          userId,
+          cartItems,
+        });
+        if (response.status === 200) {
+          alert("Checkout successful!");
+          this.cart = [];
+        }
+      } catch (error) {
+        console.error("Error during checkout:", error.message);
+        alert("Checkout failed. Please try again.");
+      }
+    },
   },
   mounted() {
     this.fetchCart();
@@ -171,10 +187,10 @@ hr {
 .item-details {
   flex: 1;
   display: flex;
-  flex-direction: row; /* Disposition en ligne */
-  justify-content: space-between; /* Espacement entre le nom et le bouton */
-  text-align: left; /* Aligner le texte à gauche */
-  align-items: center; /* Aligner verticalement le texte et le bouton */
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: left;
+  align-items: center;
 }
 
 .item-details h2 {
@@ -265,7 +281,7 @@ hr {
 
 @media (max-width: 768px) {
   .cart-content {
-    flex-direction: column; /* Empiler les éléments sur les petits écrans */
+    flex-direction: column;
     gap: 20px;
   }
 
@@ -274,23 +290,23 @@ hr {
   }
 
   .cart-item {
-    flex-direction: column; /* Disposition verticale des éléments */
+    flex-direction: column;
     gap: 10px;
   }
 
   .item-details {
-    flex-direction: column; /* Alignement des éléments en colonne pour mobile */
-    justify-content: flex-start; /* Placer les éléments les uns sous les autres */
+    flex-direction: column;
+    justify-content: flex-start;
     text-align: left;
   }
 
   .remove-btn {
-    align-self: flex-end; /* Le bouton est aligné à droite */
+    align-self: flex-end;
     margin-top: 10px;
   }
 
   .cart-summary {
-    width: 100%; /* La section du résumé prend toute la largeur */
+    width: 100%;
     padding: 10px;
     border-radius: 5px;
   }
