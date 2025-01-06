@@ -1,26 +1,26 @@
 <template>
-  <div class="dashboard-users">
+  <div class="dashboard-users" aria-label="User Management Dashboard">
     <AdminMenu />
     <h1>Manage Users</h1>
 
-    <button @click="toggleUserForm">
+    <button @click="toggleUserForm" aria-label="Toggle Add User Form">
       {{ showUserForm ? 'Cancel' : 'Add User' }}
     </button>
 
-    <form v-if="showUserForm" @submit.prevent="createOrUpdateUser">
-      <input v-model="newUser.username" placeholder="Name" required />
-      <input v-model="newUser.email" placeholder="Email" type="email" required />
+    <form v-if="showUserForm" @submit.prevent="createOrUpdateUser" aria-label="User Form">
+      <input v-model="newUser.username" placeholder="Name" required aria-label="User Name" />
+      <input v-model="newUser.email" placeholder="Email" type="email" required aria-label="User Email" />
       <template v-if="!newUser.id">
-        <input v-model="newUser.password" placeholder="Password" type="password" required />
+        <input v-model="newUser.password" placeholder="Password" type="password" required aria-label="User Password" />
       </template>
-      <select v-model="newUser.role" required>
+      <select v-model="newUser.role" required aria-label="User Role">
         <option value="user">User</option>
         <option value="admin">Admin</option>
       </select>
-      <button type="submit">{{ newUser.id ? 'Update' : 'Add' }}</button>
+      <button type="submit" aria-label="{{ newUser.id ? 'Update User' : 'Add User' }}">{{ newUser.id ? 'Update' : 'Add' }}</button>
     </form>
 
-    <table>
+    <table aria-label="User List">
       <thead>
         <tr>
           <th>ID</th>
@@ -31,14 +31,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user.id">
+        <tr v-for="user in users" :key="user.id" aria-label="User {{ user.username }}">
           <td>{{ user.id }}</td>
           <td>{{ user.username }}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
           <td>
-            <button @click="editUser(user)" class="edit-button">Edit</button>
-            <button @click="deleteUser(user.id)" class="delete-button">Delete</button>
+            <button @click="editUser(user)" class="edit-button" aria-label="Edit {{ user.username }}">Edit</button>
+            <button @click="deleteUser(user.id)" class="delete-button" aria-label="Delete {{ user.username }}">Delete</button>
           </td>
         </tr>
       </tbody>
