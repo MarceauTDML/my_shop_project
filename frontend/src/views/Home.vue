@@ -1,39 +1,51 @@
 <template>
-  <div class="home">
-    <!-- Filtres -->
-    <div class="filters">
-      <input type="text" v-model="searchQuery" placeholder="Search..." />
-      <input type="number" v-model.number="minPrice" placeholder="Minimum price" min="0" />
-      <input type="number" v-model.number="maxPrice" :min="minPrice" placeholder="Maximum price" />
-      <button @click="applyFilters">Apply filters</button>
-      <button @click="resetFilters">Reset filters</button>
+  <div class="home" aria-label="Home Page">
+    <div class="filters" aria-label="Product Filters">
+      <input type="text" v-model="searchQuery" placeholder="Search..." aria-label="Search products by name or brand" />
+      <input type="number" v-model.number="minPrice" placeholder="Minimum price" min="0" aria-label="Minimum Price" />
+      <input type="number" v-model.number="maxPrice" :min="minPrice" placeholder="Maximum price" aria-label="Maximum Price" />
+      <button @click="applyFilters" aria-label="Apply Filters">Apply filters</button>
+      <button @click="resetFilters" aria-label="Reset Filters">Reset filters</button>
     </div>
- 
-    <!-- Liste des produits -->
-    <div class="product-list">
-      <div class="product-card" v-for="product in filteredProducts" :key="product.id" @click="openModal(product)">
-        <img :src="product.image" class="product-image" />
-        <p>{{ product.name }}</p>
-        <p>{{ product.price }} €</p>
-        <button class="btn-primary" @click.stop="addToCart(product.id)">Add to Cart</button>
+     <div class="product-list" aria-label="Product List">
+      <div 
+        class="product-card" 
+        v-for="product in filteredProducts" 
+        :key="product.id" 
+        @click="openModal(product)" 
+        :aria-label="`Product card for ${product.name}`">
+        <img :src="product.image" class="product-image" :alt="`${product.name} image`" />
+        <p aria-label="Product Name">{{ product.name }}</p>
+        <p aria-label="Product Price">{{ product.price }} €</p>
+        <button 
+          class="btn-primary" 
+          @click.stop="addToCart(product.id)" 
+          :aria-label="`Add ${product.name} to cart`">
+          Add to Cart
+        </button>
       </div>
     </div>
- 
-    <!-- Modale Produit -->
-    <div v-if="showModal" class="modal-overlay" @click="closeModal">
-      <div class="modal-content" @click.stop>
-        <button class="close-button" @click="closeModal">&times;</button>
-        <img :src="selectedProduct.image" class="modal-product-image" />
+     <div v-if="showModal" class="modal-overlay" @click="closeModal" aria-label="Product Details Modal">
+      <div class="modal-content" @click.stop aria-label="Product Details">
+        <button class="close-button" @click="closeModal" aria-label="Close Product Modal">&times;</button>
+        <img :src="selectedProduct.image" class="modal-product-image" :alt="`${selectedProduct.name} image`" />
         <h2>{{ selectedProduct.name }}</h2>
         <p>{{ selectedProduct.description }}</p>
         <p><strong>Price:</strong> {{ selectedProduct.price }} €</p>
-        <button class="btn-primary" @click="addToCart(selectedProduct.id)">Add to Cart</button>
+        <button 
+          class="btn-primary" 
+          @click="addToCart(selectedProduct.id)" 
+          :aria-label="`Add ${selectedProduct.name} to cart from modal`">
+          Add to Cart
+        </button>
       </div>
     </div>
- 
-    <!-- Pagination -->
-    <div class="pagination" v-if="meta.totalPages > 1">
-      <button class="pagination-button" @click="changePage(meta.currentPage - 1)" :disabled="meta.currentPage === 1">
+     <div class="pagination" v-if="meta.totalPages > 1" aria-label="Pagination Controls">
+      <button 
+        class="pagination-button" 
+        @click="changePage(meta.currentPage - 1)" 
+        :disabled="meta.currentPage === 1" 
+        aria-label="Previous Page">
         Previous
       </button>
       <span
@@ -42,10 +54,14 @@
         :class="{ 'active-page': page === meta.currentPage }"
         @click="changePage(page)"
         class="pagination-page"
-      >
+        :aria-label="`Page ${page}`">
         {{ page }}
       </span>
-      <button class="pagination-button" @click="changePage(meta.currentPage + 1)" :disabled="meta.currentPage === meta.totalPages">
+      <button 
+        class="pagination-button" 
+        @click="changePage(meta.currentPage + 1)" 
+        :disabled="meta.currentPage === meta.totalPages" 
+        aria-label="Next Page">
         Next
       </button>
     </div>
@@ -68,7 +84,7 @@ export default {
       meta: {
         currentPage: 1,
         totalPages: 0,
-        itemsPerPage: 8, // Nombre de produits par page
+        itemsPerPage: 8,
       },
       showModal: false,
       selectedProduct: {},
@@ -78,7 +94,6 @@ export default {
     ...mapState(["user"]),
   },
   methods: {
-    // Récupération des produits de l'API
     async fetchProducts(page = 1) {
       try {
         const response = await axios.get("http://localhost:1000/products", {
@@ -87,16 +102,12 @@ export default {
         this.products = response.data.data;
         this.meta.currentPage = response.data.meta.currentPage;
         this.meta.totalPages = response.data.meta.totalPages;
- 
-        // Mettre à jour les produits filtrés
-        this.filteredProducts = this.products;
+         this.filteredProducts = this.products;
       } catch (error) {
         console.error("Error fetching products:", error.message);
       }
     },
- 
-    // Appliquer les filtres
-    applyFilters() {
+     applyFilters() {
       this.filteredProducts = this.products.filter((product) => {
         const matchesSearch =
           !this.searchQuery ||
@@ -107,17 +118,13 @@ export default {
         return matchesSearch && matchesMinPrice && matchesMaxPrice;
       });
     },
- 
-    // Réinitialiser les filtres
-    resetFilters() {
+     resetFilters() {
       this.searchQuery = "";
       this.minPrice = null;
       this.maxPrice = null;
       this.filteredProducts = this.products;
     },
- 
-    // Ajouter au panier
-    async addToCart(productId) {
+     async addToCart(productId) {
       if (!this.user) {
         alert("Please login to add items to the cart.");
         return;
@@ -134,27 +141,20 @@ export default {
         alert("Unable to add product to cart.");
       }
     },
- 
-    // Ouvrir la modale
-    openModal(product) {
+     openModal(product) {
       this.selectedProduct = product;
       this.showModal = true;
     },
- 
-    // Fermer la modale
-    closeModal() {
+     closeModal() {
       this.showModal = false;
       this.selectedProduct = {};
     },
- 
-    // Changer la page
-    async changePage(page) {
+     async changePage(page) {
       if (page < 1 || page > this.meta.totalPages) return;
       await this.fetchProducts(page);
     },
   },
   mounted() {
-    // Charger les produits de la première page
     this.fetchProducts();
   },
 };
@@ -171,7 +171,6 @@ export default {
   box-sizing: border-box;
 }
  
-/* Filtres */
 .filters {
   display: flex;
   gap: 1.5rem;
@@ -206,16 +205,15 @@ export default {
   transform: scale(1.05);
 }
  
-/* Liste des produits */
 .product-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Maximum 4 produits par ligne */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   max-width: 1300px;
-  gap: 2rem; /* Augmenter l'espace entre les cartes */
+  gap: 2rem;
   margin-top: 1.5rem;
-  justify-content: center;  /* Centrer horizontalement */
-  align-items: center;      /* Centrer verticalement */
-  margin-left: auto;        /* Centrer le conteneur par rapport à l'écran */
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
   margin-right: auto;
 }
 .product-card {
@@ -260,7 +258,6 @@ export default {
   transform: scale(1.05);
 }
  
-/* Modale */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -302,7 +299,6 @@ export default {
   margin-bottom: 1rem;
 }
  
-/* Pagination */
 .pagination {
   display: flex;
   justify-content: center;
