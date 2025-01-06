@@ -1,19 +1,50 @@
-# FRONTEND SneakR
+# MyShop
 
-## Configuration du projet
+## Documentation du frontend - Myshop
+
+### Installation et Configutation
+
+**Vue.js** : framework JavaScript utilisé pour construire des interfaces utilisateur et des applications web interactives
+
+#### Étape 1 : Installer les dépendances Node.js
+On utilise :
+- axios : permet de faire des requêtes HTTP (GET, POST, PUT, DELETE, etc.) avec le JavaScript, facilitant la communication avec une API
 ```
-npm install
+cd frontend
+npm install axios
 ```
 
-## Compilation et chargement pour le développement
+#### Étape 2 : Démarrer le serveur
 ```
+cd frontend
 npm run serve
 ```
 
-## Compilation et minification pour la production
+### Structure du projet Vue
 ```
-npm run build
+frontend/
+├── public/                  # Fichiers publics (index.html, favicon, etc.)
+├── src/                     # Source du code frontend
+│   ├── assets/              # Images
+│   ├── components/          # Composants Vue.js 
+│   ├── views/               # Pages principales de l'application 
+│   ├── router/              # Configuration du routing
+│   ├── store/               # Vuex Store pour la gestion de l'état
+│   ├── App.vue              # Composant racine de l'application
+│   └── main.js              # Point d'entrée de l'application
+├── .gitignore               # Fichiers à ignorer par Git
+├── package.json             # Dépendances et scripts npm
+└── vue.config.js            # Configuration spécifique à Vue.js
 ```
+- **src/components/** */ : Contient tous les composants Vue.js réutilisables : Navbar
+- **src/views/** */ : Contient les vues principales de l’application : Home, Login, Register, Wishlist, Collection et Dashboard (admin)
+- **src/router/** */ : Contient la configuration des routes pour le projet avec vue-router.
+- **src/store/** */ : Contient la gestion de l’état avec Vuex (par exemple le login et le register)
 
-## Personnaliser la configuration
-Voir [Configuration Reference] (https://cli.vuejs.org/config/).
+### Scripts utiles
+
+Voici quelques commandes utiles pour le développement :
+- **npm run serve** : Démarre le serveur de développement local.
+- **npm run build** : Compile le projet pour la production (création d’un dossier dist/ optimisé).
+- **npm run lint** : Vérifie le code avec ESLint.
+- **npm run test** : Lance les tests unitaires du projet.
