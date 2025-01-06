@@ -35,9 +35,7 @@
     background-color: #AE9E95;
     border-radius: 0px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
     margin: 2rem auto;
-    max-width: 400px;
     text-align: center;
     width: 100%;
   }
