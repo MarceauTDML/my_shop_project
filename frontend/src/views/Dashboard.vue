@@ -1,9 +1,11 @@
 <template>
   <div class="dashboard-users" aria-label="User Management Dashboard">
-    <AdminMenu />
+    <div class="admin-menu">
+      <AdminMenu />
+    </div>
     <h1>Manage Users</h1>
 
-    <button @click="toggleUserForm" aria-label="Toggle Add User Form">
+    <button @click="toggleUserForm" class="add" aria-label="Toggle Add User Form">
       {{ showUserForm ? 'Cancel' : 'Add User' }}
     </button>
 
@@ -23,11 +25,11 @@
     <table aria-label="User List">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Actions</th>
+          <th class="table-header">ID</th>
+          <th class="table-header">Name</th>
+          <th class="table-header">Email</th>
+          <th class="table-header">Role</th>
+          <th class="table-header">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -128,7 +130,7 @@ export default {
   max-width: 900px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: #fff;
+  background-color: #fcfcfc;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: 'Poppins', Arial, sans-serif;
@@ -151,9 +153,13 @@ table th {
   background-color: #f4f4f4;
 }
 
+.add {
+  background-color: #AE9E95;
+}
+
 button {
   padding: 0.5rem 1rem;
-  background-color: #5c3d2e;
+  background-color: #ef796e;
   color: white;
   border: none;
   border-radius: 8px;
@@ -163,6 +169,10 @@ button {
 
 button:hover {
   background-color: #4a3225;
+}
+
+.table-header {
+  background-color: #D3D3D3;
 }
 
 form {
@@ -179,10 +189,14 @@ form select {
 
 .edit-button {
   margin-left: 0.5rem;
-  background-color: #007bff;
+  background-color: #AE9E95;
 }
 
 .edit-button:hover {
-  background-color: #0056b3;
+  background-color: #AE9E95;
+}
+
+.admin-menu {
+  width: 100%;
 }
 </style>

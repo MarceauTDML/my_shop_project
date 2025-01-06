@@ -21,7 +21,7 @@
         </ul>
       </nav>
     </div>
-  </template>
+</template>
   
   <script>
   export default {
@@ -32,18 +32,19 @@
   <style scoped>
   .admin-menu {
     font-family: "Poppins", Arial, sans-serif;
-    background-color: #fff;
-    border-radius: 12px;
+    background-color: #AE9E95;
+    border-radius: 0px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
     margin: 2rem auto;
     max-width: 400px;
     text-align: center;
+    width: 100%;
   }
   
   .admin-menu h1 {
     font-size: 1.8rem;
-    color: #826A5C;
+    color: #ffffff;
     margin-bottom: 1.5rem;
   }
   
@@ -59,18 +60,18 @@
   
   .menu-link {
     text-decoration: none;
-    color: #AE9E95;
+    color: #ffffff;
     font-weight: bold;
     font-size: 1.2rem;
     transition: color 0.3s ease;
   }
   
   .menu-link:hover {
-    color: #5c3d2e;
+    color: #5C3D2E;
   }
   
   .active {
-    color: #5c3d2e;
+    color: #5C3D2E;
   }
   </style>
   

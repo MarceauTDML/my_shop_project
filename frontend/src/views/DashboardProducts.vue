@@ -3,7 +3,7 @@
     <AdminMenu />
     <section>
       <h1>Manage Products</h1>
-      <button @click="showProductForm = !showProductForm" aria-label="Toggle Product Form">
+      <button @click="showProductForm = !showProductForm" class="add" aria-label="Toggle Product Form">
         {{ showProductForm ? 'Cancel' : 'Add Product' }}
       </button>
       <form v-if="showProductForm" @submit.prevent="createOrUpdateProduct" aria-label="Product Form">
@@ -23,12 +23,12 @@
       <table aria-label="Product List">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Category</th>
-            <th>Actions</th>
+            <th class="table-header">ID</th>
+            <th class="table-header">Name</th>
+            <th class="table-header">Description</th>
+            <th class="table-header">Price</th>
+            <th class="table-header">Category</th>
+            <th class="table-header">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -164,7 +164,7 @@ export default {
   max-width: 900px;
   margin: 5rem auto;
   padding: 2rem;
-  background-color: #fff8f0;
+  background-color: #fcfcfc;
   border: 1px solid #e6dfd8;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -191,9 +191,17 @@ table th {
   font-weight: bold;
 }
 
+.add {
+  background-color: #AE9E95;
+}
+
+.table-header {
+  background-color: #D3D3D3;
+}
+
 button {
   padding: 0.5rem 1rem;
-  background-color: #5c3d2e;
+  background-color: #ef796e;
   color: white;
   border: none;
   border-radius: 8px;
@@ -219,10 +227,10 @@ form input, form select {
 
 .edit-button {
   margin-left: 0.5rem;
-  background-color: #007bff;
+  background-color: #AE9E95;
 }
 
 .edit-button:hover {
-  background-color: #0056b3;
+  background-color: #AE9E95;
 }
 </style>

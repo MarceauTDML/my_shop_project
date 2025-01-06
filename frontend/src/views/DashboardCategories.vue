@@ -3,7 +3,7 @@
     <AdminMenu />
     <h1>Manage Categories</h1>
 
-    <button @click="toggleCategoryForm" aria-label="Toggle Add Category Form">
+    <button @click="toggleCategoryForm" class="add" aria-label="Toggle Add Category Form">
       {{ showCategoryForm ? 'Cancel' : 'Add Category' }}
     </button>
 
@@ -15,9 +15,9 @@
     <table aria-label="Category List">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Actions</th>
+          <th class="table-header">ID</th>
+          <th class="table-header">Name</th>
+          <th class="table-header">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -114,7 +114,7 @@ export default {
   max-width: 900px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: #fff;
+  background-color: #fcfcfc;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: 'Poppins', Arial, sans-serif;
@@ -139,12 +139,20 @@ table th {
 
 button {
   padding: 0.5rem 1rem;
-  background-color: #5c3d2e;
+  background-color: #ef796e;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.table-header {
+  background-color: #D3D3D3;
+}
+
+.add {
+  background-color: #AE9E95;
 }
 
 button:hover {
@@ -164,10 +172,10 @@ form input {
 
 .edit-button {
   margin-left: 0.5rem;
-  background-color: #007bff;
+  background-color: #AE9E95;
 }
 
 .edit-button:hover {
-  background-color: #0056b3;
+  background-color: #AE9E95;
 }
 </style>

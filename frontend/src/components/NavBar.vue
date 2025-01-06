@@ -1,12 +1,9 @@
 <template>
   <nav class="navbar">
     <div class="navbar-container">
-      <!-- Logo à gauche -->
       <router-link to="/" class="navbar-brand">
         <img src="@/assets/logo.png" alt="Myshop Logo" class="logo" />
       </router-link>
- 
-      <!-- Liens au centre -->
       <ul class="navbar-links">
         <li v-if="user" class="navbar-item">
           <router-link to="/" class="navbar-link">Products</router-link>
@@ -18,9 +15,7 @@
           <router-link to="/dashboard/users" class="navbar-link">Dashboard</router-link>
         </li>
       </ul>
- 
-      <!-- Liens à droite pour Login et Register -->
-      <ul class="navbar-links-right">
+       <ul class="navbar-links-right">
         <li v-if="!user" class="navbar-item">
           <router-link to="/login" class="navbar-link">Login</router-link>
         </li>
@@ -28,9 +23,7 @@
           <router-link to="/register" class="navbar-link">Register</router-link>
         </li>
       </ul>
- 
-      <!-- Icônes à droite -->
-      <div class="navbar-icons">
+       <div class="navbar-icons">
         <router-link v-if="user" to="/cart" class="icon-link">
           <img src="@/assets/bag-icon.svg" alt="Cart Icon" class="icon" />
         </router-link>
@@ -108,15 +101,14 @@ export default {
   height: auto;
 }
  
-/* Liens au centre */
 .navbar-links {
   display: flex;
   gap: 1.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
-  flex-grow: 1; /* Permet à la section centrale de prendre toute la place disponible */
-  justify-content: center; /* Centrer les éléments au centre */
+  flex-grow: 1;
+  justify-content: center;
 }
  
 .navbar-links-right {
@@ -125,7 +117,7 @@ export default {
   list-style: none;
   margin: 0;
   padding: 0;
-  justify-content: flex-end; /* Positionne les éléments à droite */
+  justify-content: flex-end;
 }
  
 .navbar-item {
@@ -145,33 +137,31 @@ export default {
   color: #e2e2e2;
 }
  
-/* Icônes à droite */
 .navbar-icons {
-  display: flex; /* Aligne les icônes horizontalement */
-  justify-content: flex-end; /* Positionne les icônes à droite */
-  align-items: center; /* Centre les icônes verticalement */
-  gap: 1rem; /* Espace entre les icônes */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
 }
  
 .icon-link {
-  display: flex; /* Aligne le contenu en ligne */
-  align-items: center; /* Centre verticalement */
-  background: none; /* Supprime le fond */
-  border: none; /* Supprime les bordures */
-  padding: 0; /* Supprime le padding */
-  cursor: pointer; /* Montre le curseur interactif */
-  text-decoration: none; /* Supprime le soulignement */
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
 }
  
 .icon-link:hover .icon {
-  transform: scale(1.1); /* Effet de zoom au survol */
+  transform: scale(1.1);
 }
  
 .icon {
-  width: 24px; /* Taille de l'icône */
-  height: 24px; /* Taille de l'icône */
-  transition: transform 0.3s ease; /* Animation au survol */
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
 }
- 
 
 </style>
