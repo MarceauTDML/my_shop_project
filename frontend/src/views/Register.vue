@@ -1,18 +1,18 @@
 <template>
-  <div class="register">
+  <div class="register" aria-label="User Registration Page">
     <h1>Register</h1>
-    <form @submit.prevent="registerUser">
+    <form @submit.prevent="registerUser" aria-label="Registration Form">
       <div class="form-group">
         <label for="name">First Name</label>
-        <input id="name" v-model="form.name" type="text" required />
+        <input id="name" v-model="form.name" type="text" required aria-label="First Name Input" />
       </div>
       <div class="form-group">
         <label for="lastName">Last Name</label>
-        <input id="lastName" v-model="form.lastName" type="text" required />
+        <input id="lastName" v-model="form.lastName" type="text" required aria-label="Last Name Input" />
       </div>
       <div class="form-group">
         <label for="email">Email</label>
-        <input id="email" v-model="form.email" type="email" required />
+        <input id="email" v-model="form.email" type="email" required aria-label="Email Input" />
       </div>
       <div class="form-group">
         <label for="password">Password</label>
@@ -21,10 +21,11 @@
           v-model="form.password"
           type="password"
           required
+          aria-label="Password Input"
         />
-        <p v-if="passwordError" class="error">{{ passwordError }}</p>
+        <p v-if="passwordError" class="error" aria-live="polite" aria-label="Password Error">{{ passwordError }}</p>
       </div>
-      <button class="primary-button" type="submit">Register</button>
+      <button class="primary-button" type="submit" aria-label="Submit Registration Form">Register</button>
     </form>
   </div>
 </template>
@@ -68,7 +69,7 @@ export default {
         alert("Registration successful!");
         this.$router.push("/login");
       } catch (error) {
-        console.error("Error registering user:", error);
+        console.error("Error registering user:", error.message);
         alert("An error occurred during registration. Please try again.");
       }
     },
