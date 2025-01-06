@@ -1,15 +1,15 @@
 <template>
-  <div class="profile">
+  <div class="profile" aria-label="User Profile Page">
     <h1 class="profile-title">My account</h1>
-    <div v-if="!user" class="profile-login">
+    <div v-if="!user" class="profile-login" aria-label="Login Prompt">
       <p>Please log in to access your profile.</p>
-      <router-link to="/login" class="btn-primary">Login</router-link>
+      <router-link to="/login" class="btn-primary" aria-label="Login Button">Login</router-link>
     </div>
-    <div v-else>
-      <div class="profile-info">
-        <p><strong>Name :</strong> {{ user.username }}</p>
-        <p><strong>Email :</strong> {{ user.email }}</p>
-        <p><strong>Role :</strong> {{ user.role }}</p>
+    <div v-else aria-label="User Information">
+      <div class="profile-info" aria-label="Basic User Information">
+        <p aria-label="User Name"><strong>Name :</strong> {{ user.username }}</p>
+        <p aria-label="User Email"><strong>Email :</strong> {{ user.email }}</p>
+        <p aria-label="User Role"><strong>Role :</strong> {{ user.role }}</p>
       </div>
     </div>
   </div>
@@ -46,7 +46,7 @@ export default {
         );
         this.description = response.data.description;
       } catch (error) {
-        console.error('Erreur lors de la récupération de la description :', error.message);
+        console.error('Error fetching description:', error.message);
       }
     },
     async fetchBadges() {
@@ -61,7 +61,7 @@ export default {
         this.unlockedBadges = unlockedBadges.data;
         this.lockedBadges = allBadges.data.filter(badge => !unlockedIds.includes(badge.id));
       } catch (error) {
-        console.error('Erreur lors de la récupération des badges :', error.message);
+        console.error('Error fetching badges:', error.message);
       }
     },
     async saveDescription() {
@@ -72,10 +72,10 @@ export default {
           { headers: { Authorization: `Bearer ${this.user.token}` } }
         );
         this.editingDescription = false;
-        alert('Description mise à jour avec succès !');
+        alert('Description updated successfully!');
       } catch (error) {
-        console.error('Erreur lors de la mise à jour de la description :', error.message);
-        alert('Impossible de mettre à jour la description.');
+        console.error('Error updating description:', error.message);
+        alert('Unable to update the description.');
       }
     },
     startEditing() {
@@ -86,7 +86,7 @@ export default {
     },
     async uploadProfileImage() {
       if (!this.selectedImage) {
-        alert('Veuillez sélectionner une image.');
+        alert('Please select an image.');
         return;
       }
       const formData = new FormData();
@@ -105,10 +105,10 @@ export default {
         const updatedUser = { ...this.user, profile_image: response.data.profile_image };
         localStorage.setItem('user', JSON.stringify(updatedUser));
         this.$store.commit('setUser', updatedUser);
-        alert('Photo de profil mise à jour avec succès.');
+        alert('Profile picture updated successfully.');
       } catch (error) {
-        console.error("Erreur lors de l'upload de la photo de profil :", error.message);
-        alert("Impossible de mettre à jour la photo de profil.");
+        console.error("Error uploading profile picture:", error.message);
+        alert("Unable to update the profile picture.");
       }
     },
   },
