@@ -8,7 +8,7 @@
       <button @click="applyFilters">Apply filters</button>
       <button @click="resetFilters">Reset filters</button>
     </div>
-
+ 
     <!-- Liste des produits -->
     <div class="product-list">
       <div class="product-card" v-for="product in filteredProducts" :key="product.id" @click="openModal(product)">
@@ -18,7 +18,7 @@
         <button class="btn-primary" @click.stop="addToCart(product.id)">Add to Cart</button>
       </div>
     </div>
-
+ 
     <!-- Modale Produit -->
     <div v-if="showModal" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
@@ -30,7 +30,7 @@
         <button class="btn-primary" @click="addToCart(selectedProduct.id)">Add to Cart</button>
       </div>
     </div>
-
+ 
     <!-- Pagination -->
     <div class="pagination" v-if="meta.totalPages > 1">
       <button class="pagination-button" @click="changePage(meta.currentPage - 1)" :disabled="meta.currentPage === 1">
@@ -51,11 +51,11 @@
     </div>
   </div>
 </template>
-
+ 
 <script>
 import axios from "axios";
 import { mapState } from "vuex";
-
+ 
 export default {
   name: "Home",
   data() {
@@ -87,14 +87,14 @@ export default {
         this.products = response.data.data;
         this.meta.currentPage = response.data.meta.currentPage;
         this.meta.totalPages = response.data.meta.totalPages;
-
+ 
         // Mettre à jour les produits filtrés
         this.filteredProducts = this.products;
       } catch (error) {
         console.error("Error fetching products:", error.message);
       }
     },
-
+ 
     // Appliquer les filtres
     applyFilters() {
       this.filteredProducts = this.products.filter((product) => {
@@ -107,7 +107,7 @@ export default {
         return matchesSearch && matchesMinPrice && matchesMaxPrice;
       });
     },
-
+ 
     // Réinitialiser les filtres
     resetFilters() {
       this.searchQuery = "";
@@ -115,7 +115,7 @@ export default {
       this.maxPrice = null;
       this.filteredProducts = this.products;
     },
-
+ 
     // Ajouter au panier
     async addToCart(productId) {
       if (!this.user) {
@@ -134,19 +134,19 @@ export default {
         alert("Unable to add product to cart.");
       }
     },
-
+ 
     // Ouvrir la modale
     openModal(product) {
       this.selectedProduct = product;
       this.showModal = true;
     },
-
+ 
     // Fermer la modale
     closeModal() {
       this.showModal = false;
       this.selectedProduct = {};
     },
-
+ 
     // Changer la page
     async changePage(page) {
       if (page < 1 || page > this.meta.totalPages) return;
@@ -159,18 +159,18 @@ export default {
   },
 };
 </script>
-
+ 
 <style scoped>
 .home {
   font-family: "Poppins", Arial, sans-serif;
-  color: #5f5f5f;
+  color: #826A5C;
   background-color: #f9f9f9;
   max-width: 100%;
   margin: 0 auto;
   padding: 3rem 1.5rem;
   box-sizing: border-box;
 }
-
+ 
 /* Filtres */
 .filters {
   display: flex;
@@ -191,7 +191,7 @@ export default {
   width: 200px;
 }
 .filters button {
-  background-color: #ff6f00;
+  background-color: #AE9E95;
   color: white;
   border: none;
   padding: 0.8rem 1.4rem;
@@ -202,23 +202,27 @@ export default {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 .filters button:hover {
-  background-color: #ff4500;
+  background-color: #bdada4;
   transform: scale(1.05);
 }
-
+ 
 /* Liste des produits */
 .product-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Maximum 4 produits par ligne */
+  max-width: 1300px;
+  gap: 2rem; /* Augmenter l'espace entre les cartes */
   margin-top: 1.5rem;
+  justify-content: center;  /* Centrer horizontalement */
+  align-items: center;      /* Centrer verticalement */
+  margin-left: auto;        /* Centrer le conteneur par rapport à l'écran */
+  margin-right: auto;
 }
 .product-card {
   padding: 1.5rem;
-  background-color: #fff;
+  background-color: #EAE9E8;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  border-radius: 12px;
   transition: box-shadow 0.3s ease, transform 0.2s ease;
   cursor: pointer;
 }
@@ -237,24 +241,25 @@ export default {
 .product-card p {
   margin: 0.5rem 0;
   font-size: 1rem;
-  color: #333;
+  color: #826A5C;
 }
 .btn-primary {
-  background-color: #ff6f00;
+  background-color: #AE9E95;
+  width: 100%;
   color: white;
   padding: 0.8rem 1.4rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 0px;
   cursor: pointer;
   font-weight: bold;
   font-size: 1rem;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 .btn-primary:hover {
-  background-color: #ff4500;
+  background-color: #bdada4;
   transform: scale(1.05);
 }
-
+ 
 /* Modale */
 .modal-overlay {
   position: fixed;
@@ -288,7 +293,7 @@ export default {
   color: #333;
 }
 .close-button:hover {
-  color: #ff6f00;
+  color: #bdada4;
 }
 .modal-product-image {
   width: 100%;
@@ -296,7 +301,7 @@ export default {
   object-fit: contain;
   margin-bottom: 1rem;
 }
-
+ 
 /* Pagination */
 .pagination {
   display: flex;
@@ -306,7 +311,7 @@ export default {
   margin-top: 3rem;
 }
 .pagination-button {
-  background-color: #ff6f00;
+  background-color: #AE9E95;
   color: white;
   border: none;
   padding: 0.8rem 1.4rem;
@@ -317,7 +322,7 @@ export default {
   transition: background-color 0.3s ease;
 }
 .pagination-button:hover:not(:disabled) {
-  background-color: #ff4500;
+  background-color: #bdada4;
 }
 .pagination-button:disabled {
   background-color: #ddd;
@@ -326,7 +331,7 @@ export default {
 .pagination-page {
   cursor: pointer;
   padding: 0.8rem 1.2rem;
-  border: 2px solid #ff6f00;
+  border: 2px solid #AE9E95;
   border-radius: 10px;
   margin: 0 5px;
   color: #333;
@@ -334,11 +339,11 @@ export default {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 .pagination-page:hover {
-  background-color: #ff6f00;
+  background-color: #bdada4;
   color: white;
 }
 .active-page {
-  background-color: #ff6f00;
+  background-color: #826A5C;
   color: white;
   pointer-events: none;
 }
