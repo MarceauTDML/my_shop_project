@@ -1,18 +1,18 @@
 <template>
-  <div class="dashboard-categories">
+  <div class="dashboard-categories" aria-label="Category Management Dashboard">
     <AdminMenu />
     <h1>Manage Categories</h1>
 
-    <button @click="toggleCategoryForm">
+    <button @click="toggleCategoryForm" aria-label="Toggle Add Category Form">
       {{ showCategoryForm ? 'Cancel' : 'Add Category' }}
     </button>
 
-    <form v-if="showCategoryForm" @submit.prevent="createOrUpdateCategory">
-      <input v-model="newCategory.name" placeholder="Category Name" required />
-      <button type="submit">{{ newCategory.id ? 'Update' : 'Add' }}</button>
+    <form v-if="showCategoryForm" @submit.prevent="createOrUpdateCategory" aria-label="Category Form">
+      <input v-model="newCategory.name" placeholder="Category Name" required aria-label="Category Name" />
+      <button type="submit" aria-label="{{ newCategory.id ? 'Update Category' : 'Add Category' }}">{{ newCategory.id ? 'Update' : 'Add' }}</button>
     </form>
 
-    <table>
+    <table aria-label="Category List">
       <thead>
         <tr>
           <th>ID</th>
@@ -21,12 +21,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="category in categories" :key="category.id">
+        <tr v-for="category in categories" :key="category.id" aria-label="Category {{ category.name }}">
           <td>{{ category.id }}</td>
           <td>{{ category.name }}</td>
           <td>
-            <button @click="editCategory(category)" class="edit-button">Edit</button>
-            <button @click="deleteCategory(category.id)" class="delete-button">Delete</button>
+            <button @click="editCategory(category)" class="edit-button" aria-label="Edit {{ category.name }}">Edit</button>
+            <button @click="deleteCategory(category.id)" class="delete-button" aria-label="Delete {{ category.name }}">Delete</button>
           </td>
         </tr>
       </tbody>
