@@ -30,7 +30,7 @@ export default {
     async fetchHistory() {
       try {
         const userId = this.$store.state.user.id;
-        const response = await axios.get(`http://localhost:1000/purchase-history/${userId}`);
+        const response = await axios.get(`https://api.ecommerce.marceautdml.com/purchase-history/${userId}`);
         this.history = response.data;
       } catch (error) {
         if (error.response && error.response.status === 404) {

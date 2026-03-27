@@ -73,7 +73,7 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const { data } = await axios.get('http://localhost:1000/products');
+        const { data } = await axios.get('https://api.ecommerce.marceautdml.com/products');
         this.products = data.data;
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -83,10 +83,10 @@ export default {
     async createOrUpdateProduct() {
       try {
         if (this.newProduct.id) {
-          await axios.put(`http://localhost:1000/products/${this.newProduct.id}`, this.newProduct);
+          await axios.put(`https://api.ecommerce.marceautdml.com/products/${this.newProduct.id}`, this.newProduct);
           alert('Product updated successfully.');
         } else {
-          await axios.post('http://localhost:1000/products', this.newProduct);
+          await axios.post('https://api.ecommerce.marceautdml.com/products', this.newProduct);
           alert('Product added successfully.');
         }
         this.fetchProducts();
@@ -99,7 +99,7 @@ export default {
     },
     async deleteProduct(productId) {
       try {
-        await axios.delete(`http://localhost:1000/products/${productId}`);
+        await axios.delete(`https://api.ecommerce.marceautdml.com/products/${productId}`);
         this.fetchProducts();
         alert('Product deleted successfully.');
       } catch (error) {
@@ -113,7 +113,7 @@ export default {
     },
     async fetchCategories() {
       try {
-        const { data } = await axios.get('http://localhost:1000/categories');
+        const { data } = await axios.get('https://api.ecommerce.marceautdml.com/categories');
         this.categories = data;
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -123,10 +123,10 @@ export default {
     async createOrUpdateCategory() {
       try {
         if (this.newCategory.id) {
-          await axios.put(`http://localhost:1000/categories/${this.newCategory.id}`, this.newCategory);
+          await axios.put(`https://api.ecommerce.marceautdml.com/categories/${this.newCategory.id}`, this.newCategory);
           alert('Category updated successfully.');
         } else {
-          await axios.post('http://localhost:1000/categories', this.newCategory);
+          await axios.post('https://api.ecommerce.marceautdml.com/categories', this.newCategory);
           alert('Category added successfully.');
         }
         this.fetchCategories();
@@ -139,7 +139,7 @@ export default {
     },
     async deleteCategory(categoryId) {
       try {
-        await axios.delete(`http://localhost:1000/categories/${categoryId}`);
+        await axios.delete(`https://api.ecommerce.marceautdml.com/categories/${categoryId}`);
         this.fetchCategories();
         alert('Category deleted successfully.');
       } catch (error) {

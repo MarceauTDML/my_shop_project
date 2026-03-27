@@ -57,7 +57,7 @@ export default {
     async fetchValidationCount() {
       if (this.user && this.user.role === "ADMIN") {
         try {
-          const response = await axios.get("http://localhost:1000/sneaker-validation/count");
+          const response = await axios.get("https://api.ecommerce.marceautdml.com/sneaker-validation/count");
           this.validationCount = response.data.count;
         } catch (error) {
           console.error("Erreur lors de la récupération des validations :", error.message);

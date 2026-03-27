@@ -67,7 +67,7 @@ export default {
   methods: {
     async fetchUsers() {
       try {
-        const response = await axios.get('http://localhost:1000/users');
+        const response = await axios.get('https://api.ecommerce.marceautdml.com/users');
         this.users = response.data;
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -77,14 +77,14 @@ export default {
     async createOrUpdateUser() {
       try {
         if (this.newUser.id) {
-          await axios.patch(`http://localhost:1000/users/${this.newUser.id}`, {
+          await axios.patch(`https://api.ecommerce.marceautdml.com/users/${this.newUser.id}`, {
             username: this.newUser.username,
             email: this.newUser.email,
             role: this.newUser.role,
           });
           alert('User updated successfully.');
         } else {
-          await axios.post('http://localhost:1000/users', this.newUser);
+          await axios.post('https://api.ecommerce.marceautdml.com/users', this.newUser);
           alert('User added successfully.');
         }
         this.fetchUsers();
@@ -96,7 +96,7 @@ export default {
     },
     async deleteUser(userId) {
       try {
-        await axios.delete(`http://localhost:1000/users/${userId}`);
+        await axios.delete(`https://api.ecommerce.marceautdml.com/users/${userId}`);
         this.fetchUsers();
         alert('User deleted successfully.');
       } catch (error) {

@@ -96,7 +96,7 @@ export default {
   methods: {
     async fetchProducts(page = 1) {
       try {
-        const response = await axios.get("http://localhost:1000/products", {
+        const response = await axios.get("https://api.ecommerce.marceautdml.com/products", {
           params: { page, limit: this.meta.itemsPerPage },
         });
         this.products = response.data.data;
@@ -130,7 +130,7 @@ export default {
         return;
       }
       try {
-        await axios.post("http://localhost:1000/cart", {
+        await axios.post("https://api.ecommerce.marceautdml.com/cart", {
           userId: this.user.id,
           productId,
           quantity: 1,

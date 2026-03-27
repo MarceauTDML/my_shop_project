@@ -63,7 +63,7 @@ export default {
       }
       try {
         const response = await axios.post(
-          "http://localhost:1000/register",
+          "https://api.ecommerce.marceautdml.com/register",
           this.form
         );
         alert("Registration successful!");

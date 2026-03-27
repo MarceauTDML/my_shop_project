@@ -26,7 +26,7 @@ const store = createStore({
     actions: {
         async loginUser({ commit }, userData) {
             try {
-                const response = await axios.post('http://localhost:1000/login', userData);
+                const response = await axios.post('https://api.ecommerce.marceautdml.com/login', userData);
                 commit('setUser', response.data);
                 localStorage.setItem('user', JSON.stringify(response.data));
                 alert('Login successful!');
@@ -37,7 +37,7 @@ const store = createStore({
         },
         async registerUser({ commit }, userData) {
             try {
-                await axios.post('http://localhost:1000/register', userData);
+                await axios.post('https://api.ecommerce.marceautdml.com/register', userData);
                 alert('Registration successful!');
             } catch (error) {
                 console.error('Error during registration:', error);
@@ -46,7 +46,7 @@ const store = createStore({
         },
         async fetchSneakers({ commit }, { page = 1, limit = 8 }) {
             try {
-                const response = await axios.get(`http://localhost:1000/item?page=${page}&limit=${limit}`);
+                const response = await axios.get(`https://api.ecommerce.marceautdml.com/item?page=${page}&limit=${limit}`);
                 commit('setSneakers', {
                     sneakers: response.data.data,
                     totalItems: response.data.meta.totalItems,

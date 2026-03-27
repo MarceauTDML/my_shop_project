@@ -41,7 +41,7 @@ export default {
     async fetchDescription() {
       try {
         const response = await axios.get(
-          `http://localhost:1000/users/${this.user.id}/description`,
+          `https://api.ecommerce.marceautdml.com/users/${this.user.id}/description`,
           { headers: { Authorization: `Bearer ${this.user.token}` } }
         );
         this.description = response.data.description;
@@ -51,9 +51,9 @@ export default {
     },
     async fetchBadges() {
       try {
-        const allBadges = await axios.get('http://localhost:1000/badges');
+        const allBadges = await axios.get('https://api.ecommerce.marceautdml.com/badges');
         const unlockedBadges = await axios.get(
-          `http://localhost:1000/users/${this.user.id}/badges`,
+          `https://api.ecommerce.marceautdml.com/users/${this.user.id}/badges`,
           { headers: { Authorization: `Bearer ${this.user.token}` } }
         );
         const unlockedIds = unlockedBadges.data.map(badge => badge.id);
@@ -67,7 +67,7 @@ export default {
     async saveDescription() {
       try {
         await axios.put(
-          `http://localhost:1000/users/${this.user.id}/description`,
+          `https://api.ecommerce.marceautdml.com/users/${this.user.id}/description`,
           { description: this.description },
           { headers: { Authorization: `Bearer ${this.user.token}` } }
         );
@@ -93,7 +93,7 @@ export default {
       formData.append('profile_image', this.selectedImage);
       try {
         const response = await axios.post(
-          `http://localhost:1000/users/${this.user.id}/profile-image`,
+          `https://api.ecommerce.marceautdml.com/users/${this.user.id}/profile-image`,
           formData,
           {
             headers: {

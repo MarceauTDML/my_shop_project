@@ -30,7 +30,7 @@ export default {
   methods: {
     async loginUser() {
       try {
-        const response = await axios.post('http://localhost:1000/login', this.form);
+        const response = await axios.post('https://api.ecommerce.marceautdml.com/login', this.form);
         const user = response.data;
         localStorage.setItem('user', JSON.stringify(user));
         this.$store.commit('setUser', user);

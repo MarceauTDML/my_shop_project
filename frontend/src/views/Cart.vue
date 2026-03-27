@@ -72,7 +72,7 @@ export default {
     async fetchCart() {
       try {
         const userId = this.$store.state.user.id;
-        const response = await axios.get(`http://localhost:1000/cart/${userId}`);
+        const response = await axios.get(`https://api.ecommerce.marceautdml.com/cart/${userId}`);
         this.cart = response.data;
       } catch (error) {
         console.error("Error fetching cart:", error.message);
@@ -82,7 +82,7 @@ export default {
     async removeFromCart(item) {
       try {
         const userId = this.$store.state.user.id;
-        await axios.delete(`http://localhost:1000/cart/${userId}/${item.id}`);
+        await axios.delete(`https://api.ecommerce.marceautdml.com/cart/${userId}/${item.id}`);
         this.cart = this.cart.filter(cartItem => cartItem.id !== item.id);
         alert("Product removed from cart.");
       } catch (error) {
@@ -93,7 +93,7 @@ export default {
     async increaseQuantity(item) {
       try {
         const userId = this.$store.state.user.id;
-        await axios.put(`http://localhost:1000/cart/increase/${userId}/${item.id}`);
+        await axios.put(`https://api.ecommerce.marceautdml.com/cart/increase/${userId}/${item.id}`);
         item.quantity++;
       } catch (error) {
         console.error("Error increasing quantity:", error.message);
@@ -104,7 +104,7 @@ export default {
       try {
         const userId = this.$store.state.user.id;
         if (item.quantity > 1) {
-          await axios.put(`http://localhost:1000/cart/decrease/${userId}/${item.id}`);
+          await axios.put(`https://api.ecommerce.marceautdml.com/cart/decrease/${userId}/${item.id}`);
           item.quantity--;
         }
       } catch (error) {
@@ -123,7 +123,7 @@ export default {
           product_id: item.id,
           quantity: item.quantity,
         }));
-        const response = await axios.post("http://localhost:1000/checkout", {
+        const response = await axios.post("https://api.ecommerce.marceautdml.com/checkout", {
           userId,
           cartItems,
         });
